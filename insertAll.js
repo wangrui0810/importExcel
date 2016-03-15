@@ -81,6 +81,7 @@ function sqlActionInner(filename, callback)
 	sectype= $7, market_value = $3, market_asset = $4\
 	 where seccode=$8 and pos_date=$5 and acct=$6;";
 
+
 	pg.connect(conString, function(err, client, done) {
 				if(err) {
 				throw err;
@@ -110,12 +111,13 @@ function sqlAction(filename)
 			var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
 
 
-		    var updateString = 'update everyday_position set cost_value = $1, market_value = $2 where seccode=$3 and pos_date=$4 and acct=$5;';
+//          var updateString = 'update everyday_position set cost_value = $1, market_value = $2 where seccode=$3 and pos_date=$4 and acct=$5;';
+		    var selectString = 'select * from everyday_position where where seccode=$3 and pos_date=$4 and acct=$5;';
 			pg.connect(conString, function(err, client, done) {
 						if(err) {
 						throw err;
 						}
-						client.query(updateString,
+						client.query(selectString,
 								[c, d, a, b,transName(e)], 
 								function(err, result) {
 									done();
@@ -124,11 +126,35 @@ function sqlAction(filename)
 									console.log(err);
 									throw err;
 									}
-									console.log(result);
+									if(result.rowCount == 0)
+									{
+										doInsert(a, b, c, d, e, f, g, h, i,j);
+									}
 								});
 					});
 	});
 	console.log('sqlAction');
 };
+function doInsert(a, b, c, d, e, f, g, h, i,j)
+{
+	var insertString = ''
+	pg.connect(conString, function(err, client, done) {
+			if(err) {
+			throw err;
+			}
+			client.query(selectString,
+					[c, d, a, b,transName(e)], 
+					function(err, result) {
+						done();
+
+						if(err) {
+						console.log(err);
+						throw err;
+						}
+
+					});
+		});
+
+}
 
 module.exports = sqlAction;

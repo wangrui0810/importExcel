@@ -9,8 +9,8 @@ function sqlActionInner(filename, callback)
 
 	var seccode, date, cost_value, market_value;
 
-	date = filename.substr(62, 10);
-	var xingYun = filename.substr(59, 1);
+	date = filename.substr(64, 10);
+	var xingYun = filename.substr(61, 1);
 //	if(date != '2016-01-11')
 //		return ;
 
@@ -61,20 +61,23 @@ function sqlActionInner(filename, callback)
 			seccode = seccode.substr(seccode.length-6, 6);
 			cost_value = ei.v;
 			market_value = hi.v;
+			cost_asset = fi.v/100;
+			market_asset = ii.v/100;
 
 
 
 
-			console.log(seccode, date, cost_value, market_value, xingYun);
-			callback(seccode, date, cost_value, market_value, xingYun);
+
+//			console.log(seccode, date, cost_value, market_value, xingYun);
+			callback(seccode, date, cost_value, market_value, xingYun, cost_asset, market_asset);
 		}
 	}
-	console.log(s1, s2, s3, s4, transName(xingYun));
-	console.log(date);
+//	console.log(s1, s2, s3, s4, transName(xingYun));
+//	console.log(date);
 	
 	//将for循环遍历之后，求出总和， 现金持仓更新到数据库中
 	var pg = require('pg');
-	var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+	var conString = "postgres://postgres:ZZS2012@192.168.150.27/position_db";
 
 
 	var updateCash = "update everyday_position set cost_value = $1, cost_asset = $2, \
@@ -90,7 +93,7 @@ function sqlActionInner(filename, callback)
 						[sum_cost-s1, sum_cost_asset-s2, sum_market-s3, sum_market_asset-s4, date, transName(xingYun), 'CashAndOther', 'M'], 
 						function(err, result) {
 							done();
-							console.log("现金持仓是", sum_cost-s1 , sum_cost_asset-s2, sum_market-s3, sum_market_asset-s4, transName(xingYun));
+			//				console.log("现金持仓是", sum_cost-s1 , sum_cost_asset-s2, sum_market-s3, sum_market_asset-s4, transName(xingYun));
 							if(err) {
 							console.log(err);
 							throw err;
@@ -104,19 +107,24 @@ function sqlActionInner(filename, callback)
 
 function sqlAction(filename)
 {
-	sqlActionInner(filename, function(a, b, c, d, e) {
+	sqlActionInner(filename, function(a, b, c, d, e, f, g) {
 
 	 		var pg = require('pg');
-			var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+			var conString = "postgres://postgres:ZZS2012@192.168.150.27/position_db";
 
 
-		    var updateString = 'update everyday_position set cost_value = $1, market_value = $2 where seccode=$3 and pos_date=$4 and acct=$5;';
+		    var updateString = "update everyday_position set cost_value = $1, market_value = $2, \
+		    cost_asset = $6, market_asset = $7 where seccode=$3 and pos_date=$4 and acct=$5;";
+
+		   
+		
 			pg.connect(conString, function(err, client, done) {
 						if(err) {
 						throw err;
 						}
-						client.query(updateString,
-								[c, d, a, b,transName(e)], 
+//						console.log(c, d, a, b,transName(e), f, g);
+						client.query(selectString,
+								[c, d, a, b,transName(e), f, g], 
 								function(err, result) {
 									done();
 
