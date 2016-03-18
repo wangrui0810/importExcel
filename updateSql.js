@@ -123,7 +123,7 @@ function sqlAction(filename)
 						throw err;
 						}
 //						console.log(c, d, a, b,transName(e), f, g);
-						client.query(selectString,
+						client.query(updateString,
 								[c, d, a, b,transName(e), f, g], 
 								function(err, result) {
 									done();
