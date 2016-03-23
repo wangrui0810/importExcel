@@ -74,7 +74,7 @@ function sqlActionInner(filename, callback)
 	
 	//将for循环遍历之后，求出总和， 现金持仓更新到数据库中
 	var pg = require('pg');
-	var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+	var conString = "postgres://postgres:ZZS2012@/position_db";
 
 
 	var updateCash = "update everyday_position set cost_value = $1, cost_asset = $2, \
@@ -108,7 +108,7 @@ function sqlAction(filename)
 	sqlActionInner(filename, function(a, b, c, d, e) {
 
 	 		var pg = require('pg');
-			var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+			var conString = "postgres://postgres:ZZS2012@/position_db";
 
 
 //          var updateString = 'update everyday_position set cost_value = $1, market_value = $2 where seccode=$3 and pos_date=$4 and acct=$5;';

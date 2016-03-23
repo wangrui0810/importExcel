@@ -78,7 +78,7 @@ function sqlActionInner(filename, callback)
 	
 	//将for循环遍历之后，求出总和， 现金持仓更新到数据库中
 	var pg = require('pg');
-	var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+	var conString = "postgres://postgres:ZZS2012@/position_db";
 
 
 	var insertCash = "insert into everyday_position values( $5, $6, $8,\

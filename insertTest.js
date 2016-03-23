@@ -23,7 +23,7 @@ rd.on('close', function(){
 function insertSql(a, b, c, d, e, f, g, h, i,j)
 {
 
-	var conString = "postgres://postgres:ZZS2012@58.83.196.218/position_db";
+	var conString = "postgres://postgres:ZZS2012@/position_db";
 	var acct = "asd";
 	var seccode = "21313";
 	var sectype = "qweqw";
